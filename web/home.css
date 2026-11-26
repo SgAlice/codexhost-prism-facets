@@ -84,6 +84,106 @@
   color: var(--pf-fg);
 }
 
+/* Phones: keep the panel short so the greeting and composer stay on screen.
+   The full view (heatmap, breakdowns) remains in the settings page. */
+@media (max-width: 640px) {
+  .pf-home {
+    padding: 10px 10px 8px;
+    border-radius: 14px;
+    margin-bottom: 2px;
+  }
+
+  .pu--home {
+    gap: 8px;
+  }
+
+  .pu--home .pu-toolbar {
+    gap: 6px;
+  }
+
+  .pu--home .pu-pills button {
+    padding: 4px 8px;
+    font-size: 12.5px;
+  }
+
+  .pu--home .pu-icon,
+  .pu--home .pu-close {
+    width: 24px;
+    height: 24px;
+  }
+
+  .pu--home .pu-filters {
+    gap: 6px;
+  }
+
+  .pu--home .pu-pills--range {
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
+
+  .pu--home .pu-filters > .pu-spacer {
+    display: none;
+  }
+
+  .pu--home .pu-select {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+    padding: 4px 6px;
+    font-size: 12px;
+  }
+
+  .pu--home .pu-body {
+    gap: 8px;
+  }
+
+  .pu--home .pu-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .pu--home .pu-card {
+    padding: 7px 8px;
+    border-radius: 9px;
+  }
+
+  .pu--home .pu-card__label {
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .pu--home .pu-card__value {
+    margin-top: 2px;
+    font-size: 14px;
+  }
+
+  .pu--home .pu-card__sub,
+  .pu--home .pu-split,
+  .pu--home .pu-heatwrap,
+  .pu--home .pu-fun,
+  .pu--home .pu-status,
+  .pu--home .pu-quota > .pu-small {
+    display: none;
+  }
+
+  .pu--home .pu-mrow,
+  .pu--home .pu-cols-6 .pu-mrow {
+    grid-template-columns: minmax(80px, 1fr) minmax(60px, 1fr) 54px;
+    padding: 5px 2px;
+  }
+
+  .pu--home .pu-mrow > :nth-child(n + 4) {
+    display: none;
+  }
+
+  .pu--home .pu-qcard {
+    padding: 10px;
+    gap: 8px;
+  }
+}
+
 @media (max-height: 760px) {
   .pu--home .pu-heatwrap {
     display: none;

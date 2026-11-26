@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.5 — 2026-11-26
+
+- Phones (≤ 640 px): the usage panel on the CH Web new-session screen becomes compact — 3-column cards, smaller type, Harness and project pickers side by side, and the heatmap, breakdown lines and footer hidden. About 234 px tall instead of ~1000 px, so the greeting and composer stay on screen. The full view remains in the settings page.
+
 ## 1.2.4 — 2026-11-26
 
 - Windows: every font stack now falls back to Microsoft YaHei UI / Microsoft YaHei instead of the generic `monospace`, which resolved to SimSun (serif) on Chinese Windows and made the usage numbers look out of place. Numbers use tabular figures.
