@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.4 — 2026-11-26
+
+- Windows: every font stack now falls back to Microsoft YaHei UI / Microsoft YaHei instead of the generic `monospace`, which resolved to SimSun (serif) on Chinese Windows and made the usage numbers look out of place. Numbers use tabular figures.
+
 ## 1.2.3 — 2026-11-26
 
 - Publishing follows the codexhost extension registry rules: the Release workflow uploads one ZIP plus the icon and screenshots as same-named assets.

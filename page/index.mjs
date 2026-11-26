@@ -183,7 +183,7 @@ export async function mount(root, api) {
     const pid = effectivePaletteId(state, scheme);
     const vars = paletteVars(pid, state.accent);
     const radius = { sharp: "5px", balanced: "9px", soft: "14px" }[state.corners];
-    const mono = CODE_FONTS[state.codeFont] ?? "ui-monospace, SFMono-Regular, Menlo, monospace";
+    const mono = CODE_FONTS[state.codeFont] ?? "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Cascadia Mono\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", monospace";
     return h(
       "figure",
       {

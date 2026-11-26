@@ -5,7 +5,7 @@
     "en": "Prism Facets",
     "zh-CN": "棱镜切面 · 光学主题"
   },
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": {
     "en": "Unofficial codexhost port of the Obsidian Prism colour system — four optical palettes, accent tones, corners, code fonts and an ambient prism light for Codex Desktop and CH Web — plus a usage dashboard built on codexhost's own usage statistics, also shown on the CH Web new-session screen.",
     "zh-CN": "Obsidian Prism（黑曜棱镜）配色系统的非官方 codexhost 移植版：四套深浅光学配色、强调色、圆角、代码字体与环境棱光，作用于 Codex Desktop 与 CH Web；并基于 codexhost 自带的用量统计提供使用统计面板，可显示在 CH Web 新会话页。"
