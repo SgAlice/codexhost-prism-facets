@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.7 — 2026-11-26
+
+- macOS app shell (CH Web): the sidebar frame was only a 40–50 % tint over the window's native vibrancy, which follows the macOS appearance, while its text follows CH Web's theme — so light text could end up on a light sidebar (and vice versa). The frame now uses the opaque palette sidebar colour, and the New Session button background is derived from the palette, so sidebar text and background always come from the same palette.
+
 ## 1.2.6 — 2026-11-26
 
 - CH Web: "Follow host" now reads CH Web's own body[data-ds-dark-theme] instead of prefers-color-scheme, which could disagree in the macOS app shell and produce a dark palette over a light host (dark sidebar text on a dark sidebar).

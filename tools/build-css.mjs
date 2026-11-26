@@ -428,10 +428,24 @@ ${decl([
 function webSidebarText(on, m) {
   const sel = (scheme) =>
     `${on}${m(`s-${scheme}`)} body :is([class*="_root"], [class*="_sessionRow"], [class*="_searchResultRow"])`;
+  // On the macOS app shell the AppFrame paints only a 40-50 % tint over the
+  // window's native vibrancy, which follows the OS appearance rather than CH
+  // Web's theme. Paint the frame with the opaque palette sidebar so the
+  // background and the text above always come from the same palette.
+  const frame = `${on} body :is([class$="_frame"], [class*="_frame "])`;
   return `${sel("dark")},
 ${sel("light")} {
   --ch-sidebar-text-primary: var(--pf-fg) !important;
   --ch-sidebar-text-muted: color-mix(in srgb, var(--pf-fg) 50%, transparent) !important;
+}
+${frame} {
+  background: var(--pf-sidebar) !important;
+}
+${on}[data-platform="darwin"] body :is([class$="_newSession"], [class*="_newSession "]) {
+  background: color-mix(in srgb, var(--pf-fg) 8%, var(--pf-sidebar)) !important;
+}
+${on}[data-platform="darwin"] body :is([class$="_newSession"], [class*="_newSession "]):hover {
+  background: color-mix(in srgb, var(--pf-fg) 12%, var(--pf-sidebar)) !important;
 }
 `;
 }

@@ -339,6 +339,15 @@ html[data-cx-ext-prism-facets-on][data-cx-ext-prism-facets-s-light] body :is([cl
   --ch-sidebar-text-primary: var(--pf-fg) !important;
   --ch-sidebar-text-muted: color-mix(in srgb, var(--pf-fg) 50%, transparent) !important;
 }
+html[data-cx-ext-prism-facets-on] body :is([class$="_frame"], [class*="_frame "]) {
+  background: var(--pf-sidebar) !important;
+}
+html[data-cx-ext-prism-facets-on][data-platform="darwin"] body :is([class$="_newSession"], [class*="_newSession "]) {
+  background: color-mix(in srgb, var(--pf-fg) 8%, var(--pf-sidebar)) !important;
+}
+html[data-cx-ext-prism-facets-on][data-platform="darwin"] body :is([class$="_newSession"], [class*="_newSession "]):hover {
+  background: color-mix(in srgb, var(--pf-fg) 12%, var(--pf-sidebar)) !important;
+}
 
 html[data-cx-ext-prism-facets-on][data-cx-ext-prism-facets-r-sharp] {
   --dsw-radius-xs: 2px !important;
