@@ -1,0 +1,139 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-only
+     Local dev harness: mounts page/widget with a fake HostExtensionPageApi and
+     runs web/index.mjs against a mock CH Web body. Run `node tools/dev/serve.mjs`
+     (static files + real backend bridge) and open /tools/dev/harness.html?view=page -->
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Prism Facets harness</title>
+<link rel="stylesheet" href="../../web/style.css" />
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { font: 13px -apple-system, BlinkMacSystemFont, sans-serif; background: var(--dsw-alias-bg-base, #fff); color: var(--dsw-alias-label-primary, #111); }
+  body { --dsw-alias-bg-base: #fff; --dsw-specific-sidebar-fill: #f6f7f9; --dsw-alias-label-primary: #0f1115; --dsw-alias-label-secondary: #61666b; --dsw-alias-border-l1: rgba(0,0,0,.06); --dsw-specific-bubble: #edf3fe; --dsw-alias-state-business-primary: #4176e6; --dsw-alias-markdown-code-block: #f9fafb; --dsw-specific-input-major: #fff; --dsw-alias-border-l2: rgba(0,0,0,.1); }
+  body[data-ds-dark-theme] { --dsw-alias-bg-base: #151517; --dsw-specific-sidebar-fill: #1b1b1c; --dsw-alias-label-primary: #f9fafb; --dsw-alias-label-secondary: #cfd3d6; --dsw-alias-border-l1: rgba(255,255,255,.06); --dsw-specific-bubble: #2c2c2e; --dsw-alias-state-business-primary: #7aaaff; --dsw-alias-markdown-code-block: #1b1b1c; --dsw-specific-input-major: #2c2c2e; --dsw-alias-border-l2: rgba(255,255,255,.12); }
+  .mock { display: grid; grid-template-columns: 240px 1fr; height: 100vh; }
+  .mock aside { background: var(--dsw-specific-sidebar-fill); border-right: 1px solid var(--dsw-alias-border-l1); padding: 18px 10px; color: var(--dsw-alias-label-secondary); }
+  .mock aside div { padding: 7px 10px; border-radius: var(--dsw-radius-sm, 8px); }
+  .mock aside div.on { background: var(--dsw-specific-sidebar-nav-item-active, rgba(0,0,0,.06)); color: var(--dsw-alias-label-primary); }
+  .mock main { padding: 40px 12%; display: flex; flex-direction: column; gap: 16px; }
+  .mock .bubble { align-self: flex-end; background: var(--dsw-specific-bubble); padding: 10px 14px; border-radius: var(--dsw-radius-md, 12px); max-width: 60%; }
+  .mock pre { background: var(--dsw-alias-markdown-code-block); padding: 14px; border-radius: var(--dsw-radius-sm, 8px); border: 1px solid var(--dsw-alias-border-l1); font-family: var(--ds-font-family-code, ui-monospace); }
+  .mock a { color: var(--dsw-alias-state-business-primary); }
+  .mock .composer { margin-top: auto; background: var(--dsw-specific-input-major); border: 1px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-lg, 16px); padding: 16px; color: var(--dsw-alias-label-secondary); }
+  #page-host { position: fixed; inset: 0; overflow: auto; }
+</style>
+</head>
+<body>
+<div class="mock" id="mock">
+  <aside><div class="on">● theme-loader</div><div>release-notes</div><div>fix-ci</div></aside>
+  <main>
+    <div class="bubble">Port the Obsidian Prism palettes to codexhost.</div>
+    <div>Done. The theme now reads from <a href="#">shared/palettes.mjs</a> on both hosts.</div>
+    <pre>export const palette = "obsidian"; // => !==</pre>
+    <div class="composer">Ask anything…</div>
+  </main>
+</div>
+<script type="module">
+  const q = new URLSearchParams(location.search);
+  const view = q.get("view") ?? "page";
+  const scheme = q.get("scheme") ?? "dark";
+  const locale = q.get("locale") ?? "zh-CN";
+  if (scheme === "dark") document.body.setAttribute("data-ds-dark-theme", "");
+  document.documentElement.dataset.dsThemeSource = scheme;
+
+  const store = { values: JSON.parse(q.get("settings") ?? "{}"), listeners: new Set() };
+  window.__store = store;
+  window.__errors = [];
+  addEventListener("error", (e) => window.__errors.push(String(e.message)));
+  addEventListener("unhandledrejection", (e) => window.__errors.push(String(e.reason)));
+
+  function makeStorage(signal) {
+    return {
+      async get() { return structuredClone(store.values); },
+      async set(values) {
+        store.values = structuredClone(values);
+        queueMicrotask(() => store.listeners.forEach((cb) => cb(structuredClone(store.values))));
+        return structuredClone(store.values);
+      },
+      onChange(cb) { store.listeners.add(cb); return () => store.listeners.delete(cb); },
+    };
+  }
+  function pageApi() {
+    const ac = new AbortController();
+    return {
+      id: "prism-facets", apiVersion: 1, hostTarget: q.get("host") ?? "web", locale, colorScheme: scheme,
+      onLocaleChange: () => () => {}, onColorSchemeChange: () => () => {},
+      signal: ac.signal, assets: { url: async (p) => `../../${p}` },
+      storage: makeStorage(ac.signal),
+      backend: {
+        async invoke(method, params) {
+          const r = await fetch("/__invoke", { method: "POST", body: JSON.stringify({ method, params }) }).then((x) => x.json());
+          if (!r.ok) throw new Error(r.error);
+          return r.value;
+        },
+      },
+    };
+  }
+  async function mountSurface(kind, hostEl) {
+    const shadow = hostEl.attachShadow({ mode: "open" });
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = `../../${kind}/style.css`;
+    await new Promise((r) => { link.onload = r; shadow.append(link); });
+    const root = document.createElement("div");
+    root.style.cssText = "--cx-page-bg:#111;--cx-page-surface:#1a1a1a;--cx-page-text:#eee;--cx-page-text-muted:#999;--cx-page-border:#333;--cx-page-accent:#4c8dff;--cx-page-danger:#e5534b;--cx-page-radius:8px;height:100%";
+    shadow.append(root);
+    const mod = await import(`../../${kind}/index.mjs`);
+    return mod.mount(root, pageApi());
+  }
+
+  // Web host injection against the mock body.
+  document.documentElement.lang = locale;
+  if (view === "home") {
+    // Mock of CH Web's new-session hero (hashed CSS-module class names).
+    document.getElementById("mock").querySelector("main").innerHTML = `
+      <div class="_x1Ab_composerSeat" style="flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0">
+        <div class="_x1Ab_composerStack _x1Ab_composerHero" style="align-self:center;width:min(820px,100%);display:flex;flex-direction:column;gap:16px;padding-bottom:32px">
+          <div class="_93RU4a_root" style="display:flex;justify-content:center"><div class="_93RU4a_stack" style="display:flex;flex-direction:column;gap:12px;width:100%;max-width:780px">
+            <div class="_93RU4a_headline" style="display:flex;justify-content:center;gap:10px;font-size:26px;line-height:32px;font-weight:500">
+              <span class="_93RU4a_fishHitbox">🐳</span><span class="_93RU4a_titleGroup">今天想做点什么？<sup style="font-size:12px">Web</sup></span>
+            </div><div class="_93RU4a_body"></div></div></div>
+          <div class="composer">描述你想要构建的内容，/ 调用指令，@ 文件或对话</div>
+        </div>
+      </div>`;
+    const main = document.getElementById("mock").querySelector("main");
+    main.style.padding = "0 24px";
+    main.style.overflow = "auto";
+  }
+  const webApi = {
+    id: "prism-facets", apiVersion: 1, signal: new AbortController().signal,
+    backend: { invoke: async (method, params) => { const r = await fetch("/__invoke", { method: "POST", body: JSON.stringify({ method, params }) }).then((x) => x.json()); if (!r.ok) throw new Error(r.error); return r.value; } },
+    dom: {
+      mount: (target, position = "append") => { const c = document.createElement("div"); c.setAttribute("data-cx-web-ext-mount", "prism-facets"); position === "prepend" ? target.prepend(c) : target.append(c); return { container: c, dispose: () => c.remove() }; },
+      mark: (el, name) => el.setAttribute(`data-cx-ext-prism-facets-${name}`, ""),
+      unmark: (el, name) => el.removeAttribute(`data-cx-ext-prism-facets-${name}`),
+    },
+    storage: makeStorage(),
+    track: () => {},
+  };
+  const web = await import("../../web/index.mjs");
+  await web.activate(webApi);
+
+  if (view === "page" || view === "both") {
+    const host = document.createElement("div");
+    host.id = "page-host";
+    document.body.append(host);
+    await mountSurface("page", host);
+  }
+  if (view === "widget" || view === "both") {
+    const host = document.createElement("div");
+    host.id = "widget-host";
+    document.body.append(host);
+    await mountSurface("widget", host);
+  }
+  window.__ready = true;
+</script>
+</body>
+</html>

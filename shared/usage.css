@@ -1,0 +1,470 @@
+/* SPDX-License-Identifier: GPL-3.0-only
+ * Prism Facets — usage statistics view. Appended to page/style.css and
+ * widget/style.css by tools/build-css.mjs. Uses the --pf-* palette tokens. */
+
+.pu {
+  display: grid;
+  gap: 14px;
+  color: var(--pf-fg);
+}
+
+.pu button,
+.pu select {
+  font: inherit;
+  color: inherit;
+}
+
+.pu-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.pu-spacer {
+  flex: 1;
+}
+
+.pu-pills {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.pu-pills button {
+  padding: 5px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--pf-fg2);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.pu-pills button:hover {
+  background: color-mix(in srgb, var(--pf-fg) 6%, transparent);
+}
+
+.pu-pills button.is-on {
+  background: color-mix(in srgb, var(--pf-fg) 10%, transparent);
+  color: var(--pf-fg);
+  font-weight: 600;
+}
+
+.pu-select {
+  max-width: 260px;
+  min-width: 140px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--pf-card-border);
+  background: var(--pf-card);
+  color: var(--pf-fg);
+  text-overflow: ellipsis;
+}
+
+.pu-icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--pf-border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--pf-fg2);
+  cursor: pointer;
+}
+
+.pu-icon.is-spin {
+  animation: pu-spin 0.9s linear infinite;
+}
+
+@keyframes pu-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pu-body {
+  display: grid;
+  gap: 14px;
+}
+
+.pu-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.pu-card {
+  min-height: 82px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--pf-fg) 3.5%, var(--pf-card));
+  border: 1px solid var(--pf-card-border);
+  box-shadow: inset 0 1px 0 var(--pf-specular);
+  min-width: 0;
+}
+
+.pu-card.is-ghost {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--pf-fg) 3%, var(--pf-card)), color-mix(in srgb, var(--pf-fg) 7%, var(--pf-card)), color-mix(in srgb, var(--pf-fg) 3%, var(--pf-card)));
+  background-size: 200% 100%;
+  animation: pu-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes pu-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+.pu-card__label {
+  color: var(--pf-fg2);
+  font-size: 12.5px;
+}
+
+.pu-card__value {
+  margin-top: 4px;
+  font: 650 20px/1.25 ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+  letter-spacing: -0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pu-card__sub {
+  margin-top: 6px;
+  color: var(--pf-fg3);
+  font-size: 11.5px;
+}
+
+/* heatmap: columns = weeks, rows = weekdays (Mon → Sun) */
+.pu-heat {
+  position: relative;
+  display: grid;
+  grid-template-rows: repeat(7, auto);
+  grid-template-columns: repeat(var(--cols, 27), minmax(0, 1fr));
+  grid-auto-flow: column;
+  gap: 4px;
+}
+
+.pu-heatwrap {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+}
+
+.pu-heatwrap .pu-heat {
+  width: 100%;
+  max-width: calc(var(--cols, 27) * 26px);
+}
+
+.pu-legend {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--pf-fg3);
+  font-size: 11px;
+}
+
+.pu-legend .pu-heat__c {
+  width: 10px;
+  height: 10px;
+}
+
+.pu-heat__c {
+  aspect-ratio: 1;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--pf-fg) 7%, transparent);
+}
+
+.pu-heat__c.is-pad {
+  visibility: hidden;
+}
+
+.pu-heat__c.l1 { background: color-mix(in srgb, var(--pf-accent) 28%, transparent); }
+.pu-heat__c.l2 { background: color-mix(in srgb, var(--pf-accent) 48%, transparent); }
+.pu-heat__c.l3 { background: color-mix(in srgb, var(--pf-accent) 72%, transparent); }
+.pu-heat__c.l4 { background: var(--pf-accent); box-shadow: 0 0 6px -1px var(--pf-accent); }
+
+.pu-heat__empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--pf-fg3);
+}
+
+.pu-fun {
+  margin: 0;
+  color: var(--pf-fg2);
+}
+
+.pu-empty {
+  margin: 0;
+  padding: 24px 0;
+  text-align: center;
+  color: var(--pf-fg3);
+}
+
+/* models */
+.pu-models {
+  gap: 2px;
+}
+
+.pu-mrow {
+  display: grid;
+  grid-template-columns: minmax(110px, 1.3fr) minmax(90px, 1.6fr) 70px 60px 56px;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 4px;
+  border-bottom: 1px solid var(--pf-border);
+}
+
+.pu-mrow--head {
+  color: var(--pf-fg3);
+  font-size: 11.5px;
+}
+
+.pu-mname {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.pu-num {
+  text-align: right;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+}
+
+.pu-mrow--head span:nth-child(n + 3) {
+  text-align: right;
+}
+
+.pu-bar {
+  position: relative;
+  height: 16px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--pf-fg) 6%, transparent);
+  overflow: hidden;
+}
+
+.pu-bar__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 4px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--pf-accent) 55%, transparent), var(--pf-accent));
+}
+
+.pu-bar__text {
+  position: relative;
+  padding-left: 6px;
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--pf-fg);
+}
+
+/* quota */
+.pu-quota {
+  gap: 10px;
+}
+
+.pu-qcard {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--pf-fg) 3.5%, var(--pf-card));
+  border: 1px solid var(--pf-card-border);
+}
+
+.pu-qcard__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pu-tag {
+  padding: 0 7px;
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 18px;
+  background: color-mix(in srgb, var(--pf-accent) 18%, transparent);
+  color: var(--pf-link);
+}
+
+.pu-q {
+  display: grid;
+  gap: 6px;
+}
+
+.pu-q__top {
+  display: flex;
+  justify-content: space-between;
+  color: var(--pf-fg2);
+}
+
+.pu-q__top strong {
+  color: var(--pf-fg);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.pu-q__bar {
+  height: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--pf-fg) 8%, transparent);
+  overflow: hidden;
+}
+
+.pu-q__fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--pf-spec-1), var(--pf-accent));
+}
+
+.pu-q.is-warm .pu-q__fill { background: var(--pf-warning); }
+.pu-q.is-hot .pu-q__fill { background: var(--pf-error); }
+.pu-q.is-stale { opacity: 0.6; }
+
+.pu-q__note,
+.pu-muted {
+  color: var(--pf-fg3);
+  font-size: 11.5px;
+}
+
+.pu-small {
+  margin: 0;
+}
+
+.pu-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--pf-fg3);
+  font-size: 11.5px;
+  overflow-wrap: anywhere;
+}
+
+.pu-status.is-error {
+  color: var(--pf-error);
+}
+
+.pu-progress {
+  flex: none;
+  width: 80px;
+  height: 4px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--pf-fg) 10%, transparent);
+  overflow: hidden;
+}
+
+.pu-progress span {
+  display: block;
+  height: 100%;
+  background: var(--pf-accent);
+  transition: width 300ms ease;
+}
+
+/* compact (widget panel) */
+.pu--compact {
+  gap: 10px;
+}
+
+.pu--compact .pu-cards {
+  gap: 6px;
+}
+
+.pu--compact .pu-card {
+  min-height: 0;
+  padding: 8px 10px;
+}
+
+.pu--compact .pu-card__value {
+  font-size: 15px;
+}
+
+.pu--compact .pu-card__label,
+.pu--compact .pu-card__sub {
+  font-size: 11px;
+}
+
+.pu--compact .pu-heat {
+  gap: 2px;
+}
+
+.pu--compact .pu-select {
+  max-width: 150px;
+  min-width: 0;
+  padding: 3px 6px;
+}
+
+.pu--compact .pu-pills button {
+  padding: 3px 8px;
+}
+
+.pu--compact .pu-mrow {
+  grid-template-columns: minmax(80px, 1fr) minmax(60px, 1fr) 54px;
+}
+
+.pu--compact .pu-mrow > :nth-child(n + 4) {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .pu-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pu-icon.is-spin,
+  .pu-card.is-ghost {
+    animation: none;
+  }
+}
+
+/* ---- codexhost additions ------------------------------------------------ */
+.pu-filters {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.pu-pills--range {
+  padding: 2px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--pf-fg) 4%, transparent);
+}
+
+.pu-cols-6 .pu-mrow {
+  grid-template-columns: minmax(110px, 1.3fr) minmax(90px, 1.5fr) 66px 60px 52px 74px;
+}
+
+.pu-split {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 6px;
+  font-size: 11.5px;
+  color: var(--pf-fg2);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.pu-split em {
+  margin-right: 4px;
+  font-style: normal;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+  color: var(--pf-fg3);
+}
+
+.pu--compact .pu-cols-6 .pu-mrow {
+  grid-template-columns: minmax(80px, 1fr) minmax(60px, 1fr) 54px;
+}

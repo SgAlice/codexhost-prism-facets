@@ -1,0 +1,380 @@
+{
+  "manifestVersion": 2,
+  "id": "prism-facets",
+  "name": {
+    "en": "Prism Facets",
+    "zh-CN": "棱镜切面 · 光学主题"
+  },
+  "version": "1.2.2",
+  "description": {
+    "en": "Unofficial codexhost port of the Obsidian Prism colour system — four optical palettes, accent tones, corners, code fonts and an ambient prism light for Codex Desktop and CH Web — plus a usage dashboard built on codexhost's own usage statistics, also shown on the CH Web new-session screen.",
+    "zh-CN": "Obsidian Prism（黑曜棱镜）配色系统的非官方 codexhost 移植版：四套深浅光学配色、强调色、圆角、代码字体与环境棱光，作用于 Codex Desktop 与 CH Web；并基于 codexhost 自带的用量统计提供使用统计面板，可显示在 CH Web 新会话页。"
+  },
+  "details": {
+    "en": "### Highlights\n\n- **Four optical palettes**: *Obsidian* and *Warm Basalt* (dark), *Daylight Crystal* and *Alabaster* (light). Follow the host's light/dark switch automatically, or lock one appearance.\n- **Accent tones**: keep the palette accent or switch to Cobalt, Iris, Amber or Titanium (mono).\n- **Shape & type**: sharp / host default / soft corners, JetBrains Mono, Cascadia Code or SF Mono for code, optional ligatures.\n- **Ambient prism light**: a 1 px spectrum hairline and a faint aura at the top of the window — static, `0 fps` when idle, never intercepts clicks. Scene presets *Full optics / Focus / Quiet*.\n- **Frosted menus** for menus and popovers.\n- **Usage statistics** from codexhost itself (`codexhost/usage/statistics/get`, the same data as *Settings → Usage*): cost, requests, total tokens (input / output / cache), active days, cache hit rate, top model, a 26-week heatmap, per-model and per-Harness breakdowns, and Codex account quota — filter by Harness, project and today / 7 / 30 / 90 days / all. On CH Web the panel also sits above the greeting of the new-session screen (hide it with × or in settings). Codex Desktop pages cannot reach the Host RPC, so there a small local backend reads Codex session logs read-only as a fallback.\n- **Settings page + quick switcher**: a full settings page with live preview, and a draggable crystal button on the main window. Desktop and Web share the same settings and the same statistics backend.\n\n### Credits & licence\n\nColour values and design are ported from [Obsidian Prism](https://github.com/RMvdesi/obsidian-prism) by **RMvdesi** (GPL-3.0-only). This port is also **GPL-3.0-only**, is not an official release, and is not affiliated with or endorsed by the original author. Antigravity-specific features of the original (context vial, effort slider, mascots, thought translator, etc.) are not included.",
+    "zh-CN": "### 特性\n\n- **四套光学配色**：深色「深空黑曜」「暖炭玄岩」，浅色「白昼冷晶」「暖白画册」。可跟随宿主深浅色自动切换，也可固定一种外观。\n- **强调色**：保留配色自带强调色，或切换为钴蓝、鸢尾紫、琥珀金、纯银钛（单色）。\n- **形状与字体**：锐利 / 宿主默认 / 柔和三档圆角；代码字体可选 JetBrains Mono、Cascadia Code、SF Mono，并可开启连字。\n- **环境棱光**：窗口顶部 1px 光谱细线与淡淡的光晕——纯静态、空闲 `0 fps`、不拦截任何点击；提供「完整光效 / 专注编码 / 静默省电」三档场景预设。\n- **毛玻璃菜单**：为菜单与浮层添加背景模糊。\n- **使用统计**直接读取 codexhost 自带的用量统计（`codexhost/usage/statistics/get`，与「设置 → 用量统计」同一份数据）：费用、请求数、Token 总量（输入 / 输出 / 缓存）、活跃天数、缓存命中率、最常用模型、26 周热力图、按模型与按 Harness 拆分，以及 Codex 账号配额；可按 Harness、项目与「今天 / 7 / 30 / 90 天 / 全部」筛选。在 CH Web 中还会显示在新会话页的问候语上方（可用 × 或在设置中隐藏）。Codex Desktop 的页面无法访问 Host RPC，因此在 Desktop 上由本机小型后台以只读方式读取 Codex 会话日志作为替代。\n- **设置页 + 速切挂件**：带实时预览的独立设置页，以及主窗口上可拖动的水晶按钮。Desktop 与 Web 共享同一份设置与同一个统计后台。\n\n### 致谢与许可\n\n配色数值与设计移植自 **RMvdesi** 的 [Obsidian Prism（黑曜棱镜）](https://github.com/RMvdesi/obsidian-prism)（GPL-3.0-only）。本移植版同样以 **GPL-3.0-only** 授权，并非官方版本，与原作者无隶属或背书关系。原项目中依赖 Antigravity 的功能（上下文试管、推理滑块、像素伙伴、思考转译等）未包含在内。"
+  },
+  "author": "SgAlice",
+  "repository": "https://github.com/SgAlice/codexhost-prism-facets",
+  "categories": [
+    "appearance",
+    "interface",
+    "analytics"
+  ],
+  "slots": [
+    "appearance.theme"
+  ],
+  "icon": "assets/icon.png",
+  "screenshots": [
+    "assets/preview-usage.png",
+    "assets/preview-page.png",
+    "assets/preview-palettes.png",
+    "assets/preview-widget.png"
+  ],
+  "settingsSchema": [
+    {
+      "key": "enabled",
+      "type": "boolean",
+      "label": {
+        "en": "Apply theme",
+        "zh-CN": "应用主题"
+      },
+      "description": {
+        "en": "Turn the colours off without disabling the plugin.",
+        "zh-CN": "无需停用插件即可临时关闭配色。"
+      },
+      "default": true
+    },
+    {
+      "key": "mode",
+      "type": "select",
+      "label": {
+        "en": "Appearance",
+        "zh-CN": "外观"
+      },
+      "options": [
+        {
+          "value": "auto",
+          "label": {
+            "en": "Follow host light/dark",
+            "zh-CN": "跟随宿主深浅色"
+          }
+        },
+        {
+          "value": "dark",
+          "label": {
+            "en": "Always dark",
+            "zh-CN": "始终深色"
+          }
+        },
+        {
+          "value": "light",
+          "label": {
+            "en": "Always light",
+            "zh-CN": "始终浅色"
+          }
+        }
+      ],
+      "default": "auto"
+    },
+    {
+      "key": "darkPalette",
+      "type": "select",
+      "label": {
+        "en": "Dark palette",
+        "zh-CN": "深色配色"
+      },
+      "options": [
+        {
+          "value": "obsidian",
+          "label": {
+            "en": "Obsidian",
+            "zh-CN": "深空黑曜"
+          }
+        },
+        {
+          "value": "warm",
+          "label": {
+            "en": "Warm Basalt",
+            "zh-CN": "暖炭玄岩"
+          }
+        }
+      ],
+      "default": "obsidian"
+    },
+    {
+      "key": "lightPalette",
+      "type": "select",
+      "label": {
+        "en": "Light palette",
+        "zh-CN": "浅色配色"
+      },
+      "options": [
+        {
+          "value": "crystal",
+          "label": {
+            "en": "Daylight Crystal",
+            "zh-CN": "白昼冷晶"
+          }
+        },
+        {
+          "value": "alabaster",
+          "label": {
+            "en": "Alabaster",
+            "zh-CN": "暖白画册"
+          }
+        }
+      ],
+      "default": "crystal"
+    },
+    {
+      "key": "accent",
+      "type": "select",
+      "label": {
+        "en": "Accent tone",
+        "zh-CN": "强调色"
+      },
+      "options": [
+        {
+          "value": "follow",
+          "label": {
+            "en": "Palette accent",
+            "zh-CN": "跟随配色"
+          }
+        },
+        {
+          "value": "cobalt",
+          "label": {
+            "en": "Cobalt",
+            "zh-CN": "钴蓝"
+          }
+        },
+        {
+          "value": "iris",
+          "label": {
+            "en": "Iris",
+            "zh-CN": "鸢尾紫"
+          }
+        },
+        {
+          "value": "amber",
+          "label": {
+            "en": "Amber",
+            "zh-CN": "琥珀金"
+          }
+        },
+        {
+          "value": "mono",
+          "label": {
+            "en": "Titanium (mono)",
+            "zh-CN": "纯银钛（单色）"
+          }
+        }
+      ],
+      "default": "follow"
+    },
+    {
+      "key": "corners",
+      "type": "select",
+      "label": {
+        "en": "Corners",
+        "zh-CN": "圆角"
+      },
+      "options": [
+        {
+          "value": "sharp",
+          "label": {
+            "en": "Sharp",
+            "zh-CN": "锐利"
+          }
+        },
+        {
+          "value": "balanced",
+          "label": {
+            "en": "Host default",
+            "zh-CN": "宿主默认"
+          }
+        },
+        {
+          "value": "soft",
+          "label": {
+            "en": "Soft",
+            "zh-CN": "柔和"
+          }
+        }
+      ],
+      "default": "balanced"
+    },
+    {
+      "key": "codeFont",
+      "type": "select",
+      "label": {
+        "en": "Code font",
+        "zh-CN": "代码字体"
+      },
+      "options": [
+        {
+          "value": "default",
+          "label": {
+            "en": "Host default",
+            "zh-CN": "宿主默认"
+          }
+        },
+        {
+          "value": "jetbrains",
+          "label": {
+            "en": "JetBrains Mono",
+            "zh-CN": "JetBrains Mono"
+          }
+        },
+        {
+          "value": "cascadia",
+          "label": {
+            "en": "Cascadia Code",
+            "zh-CN": "Cascadia Code"
+          }
+        },
+        {
+          "value": "sfmono",
+          "label": {
+            "en": "SF Mono",
+            "zh-CN": "SF Mono"
+          }
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "key": "ligatures",
+      "type": "boolean",
+      "label": {
+        "en": "Code ligatures",
+        "zh-CN": "代码连字"
+      },
+      "default": false
+    },
+    {
+      "key": "ambient",
+      "type": "select",
+      "label": {
+        "en": "Ambient prism light",
+        "zh-CN": "环境棱光"
+      },
+      "description": {
+        "en": "Static spectrum hairline and aura at the top of the window.",
+        "zh-CN": "窗口顶部的静态光谱细线与光晕。"
+      },
+      "options": [
+        {
+          "value": "off",
+          "label": {
+            "en": "Off",
+            "zh-CN": "关闭"
+          }
+        },
+        {
+          "value": "low",
+          "label": {
+            "en": "Low",
+            "zh-CN": "低"
+          }
+        },
+        {
+          "value": "medium",
+          "label": {
+            "en": "Medium",
+            "zh-CN": "中"
+          }
+        },
+        {
+          "value": "high",
+          "label": {
+            "en": "High",
+            "zh-CN": "高"
+          }
+        }
+      ],
+      "default": "medium"
+    },
+    {
+      "key": "glassMenus",
+      "type": "boolean",
+      "label": {
+        "en": "Frosted menus",
+        "zh-CN": "毛玻璃菜单"
+      },
+      "default": true
+    },
+    {
+      "key": "showWidget",
+      "type": "boolean",
+      "label": {
+        "en": "Show quick switcher",
+        "zh-CN": "显示速切挂件"
+      },
+      "description": {
+        "en": "Draggable crystal button on the main window.",
+        "zh-CN": "主窗口上可拖动的水晶按钮。"
+      },
+      "default": true
+    },
+    {
+      "key": "homeStats",
+      "type": "boolean",
+      "label": {
+        "en": "Show usage on the new-session screen",
+        "zh-CN": "在新会话页显示使用统计"
+      },
+      "description": {
+        "en": "CH Web: a usage panel above the greeting when you start a new session.",
+        "zh-CN": "CH Web：新建会话时，在问候语上方显示统计面板。"
+      },
+      "default": true
+    },
+    {
+      "key": "codexHome",
+      "type": "string",
+      "label": {
+        "en": "Codex data folder",
+        "zh-CN": "Codex 数据目录"
+      },
+      "description": {
+        "en": "Only for the Codex Desktop fallback (Codex log scan). Leave empty for ~/.codex.",
+        "zh-CN": "仅用于 Codex Desktop 的替代统计（扫描 Codex 日志）。留空即使用 ~/.codex。"
+      },
+      "placeholder": {
+        "en": "~/.codex",
+        "zh-CN": "~/.codex"
+      },
+      "default": ""
+    }
+  ],
+  "page": {
+    "apiVersion": 1,
+    "entry": "page/index.mjs",
+    "style": "page/style.css",
+    "title": {
+      "en": "Prism Facets",
+      "zh-CN": "棱镜切面"
+    }
+  },
+  "widget": {
+    "apiVersion": 1,
+    "entry": "widget/index.mjs",
+    "style": "widget/style.css"
+  },
+  "desktop": {
+    "apiVersion": 1,
+    "script": "desktop/index.js",
+    "style": "desktop/style.css"
+  },
+  "web": {
+    "apiVersion": 1,
+    "entry": "web/index.mjs",
+    "style": "web/style.css"
+  },
+  "backend": {
+    "apiVersion": 1,
+    "entry": "backend/index.mjs"
+  }
+}

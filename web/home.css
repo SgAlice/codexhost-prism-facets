@@ -1,0 +1,97 @@
+/* SPDX-License-Identifier: GPL-3.0-only
+ * Prism Facets — usage panel on the CH Web new-session screen. Rendered in a
+ * shadow root; bundled into shared/usage-css.mjs by tools/build-css.mjs. */
+
+:host {
+  all: initial;
+  display: block;
+  width: 100%;
+}
+
+.pf-home {
+  box-sizing: border-box;
+  margin: 0 auto 8px;
+  padding: 16px 18px 12px;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--pf-card) 92%, transparent);
+  border: 1px solid var(--pf-card-border);
+  box-shadow:
+    inset 0 1px 0 var(--pf-specular),
+    0 18px 40px -24px rgb(0 0 0 / 0.55);
+  color: var(--pf-fg);
+  font: 13px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans", "Noto Sans CJK SC", sans-serif;
+  text-align: left;
+  -webkit-font-smoothing: antialiased;
+  animation: pf-home-in 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pf-home *,
+.pf-home *::before,
+.pf-home *::after {
+  box-sizing: border-box;
+}
+
+@keyframes pf-home-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* Denser layout so the headline and composer still fit below. */
+.pu--home .pu-card {
+  min-height: 0;
+  padding: 10px 12px;
+}
+
+.pu--home .pu-card__value {
+  font-size: 17px;
+}
+
+.pu--home .pu-cards {
+  gap: 8px;
+}
+
+.pu--home .pu-heatwrap .pu-heat {
+  max-width: calc(var(--cols, 27) * 20px);
+  gap: 3px;
+}
+
+.pu--home .pu-heatwrap {
+  gap: 6px;
+}
+
+.pu--home .pu-fun {
+  font-size: 12.5px;
+}
+
+.pu-close {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--pf-fg3);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.pu-close:hover {
+  background: color-mix(in srgb, var(--pf-fg) 8%, transparent);
+  color: var(--pf-fg);
+}
+
+@media (max-height: 760px) {
+  .pu--home .pu-heatwrap {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-home {
+    animation: none;
+  }
+}

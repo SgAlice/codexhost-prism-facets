@@ -1,0 +1,674 @@
+/* SPDX-License-Identifier: GPL-3.0-only
+ * Prism Facets — settings page. Colours come from the active palette
+ * (--pf-*, set by page/index.mjs) with host --cx-page-* variables as fallback. */
+
+.pf-page {
+  --pf-r: var(--cx-page-radius, 10px);
+  --_bg: var(--pf-bg, var(--cx-page-bg));
+  --_surface: var(--pf-card, var(--cx-page-surface));
+  --_text: var(--pf-fg, var(--cx-page-text));
+  --_muted: var(--pf-fg3, var(--cx-page-text-muted));
+  --_border: var(--pf-card-border, var(--cx-page-border));
+  --_accent: var(--pf-accent, var(--cx-page-accent));
+  --_danger: var(--pf-error, var(--cx-page-danger));
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: 28px clamp(16px, 4vw, 40px) 40px;
+  background:
+    radial-gradient(120% 60% at 0% 0%, color-mix(in srgb, var(--pf-spec-1, transparent) 7%, transparent), transparent 60%),
+    var(--_bg);
+  color: var(--_text);
+  font: 13px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans", "Noto Sans CJK SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.pf-page *,
+.pf-page *::before,
+.pf-page *::after {
+  box-sizing: border-box;
+}
+
+.pf-page button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.pf-page :focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--_accent) 70%, transparent);
+  outline-offset: 2px;
+}
+
+/* ---- header ---------------------------------------------------------- */
+.pf-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 1120px;
+  margin: 0 auto 22px;
+}
+
+.pf-head__logo {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: calc(var(--pf-r) + 4px);
+  background: linear-gradient(160deg, var(--_surface), var(--pf-secondary, var(--_surface)));
+  border: 1px solid var(--_border);
+  box-shadow: inset 0 1px 0 var(--pf-specular, transparent), 0 8px 24px -12px color-mix(in srgb, var(--pf-spec-2, #000) 60%, transparent);
+}
+
+.pf-head__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.pf-head h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.pf-head p {
+  margin: 2px 0 0;
+  color: var(--_muted);
+}
+
+.pf-status {
+  font-size: 12px;
+  color: var(--_muted);
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.pf-status.is-ok {
+  opacity: 1;
+  color: var(--pf-success, var(--_accent));
+}
+
+.pf-status.is-error {
+  opacity: 1;
+  color: var(--_danger);
+}
+
+/* ---- layout ---------------------------------------------------------- */
+.pf-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 420px);
+  gap: 22px;
+  max-width: 1120px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .pf-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pf-col--preview {
+    order: -1;
+  }
+}
+
+.pf-col {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.pf-col--preview {
+  position: sticky;
+  top: 16px;
+}
+
+.pf-section {
+  padding: 16px 18px;
+  border-radius: calc(var(--pf-r) + 4px);
+  background: var(--_surface);
+  border: 1px solid var(--_border);
+  box-shadow: inset 0 1px 0 var(--pf-specular, transparent);
+}
+
+.pf-section__title {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--_muted);
+}
+
+.pf-group-label {
+  margin: 12px 0 8px;
+  font-size: 12px;
+  color: var(--_muted);
+}
+
+.pf-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  flex-wrap: wrap;
+}
+
+.pf-row + .pf-row {
+  border-top: 1px solid var(--pf-border, var(--_border));
+}
+
+.pf-row__text {
+  display: grid;
+  gap: 1px;
+}
+
+.pf-row__label {
+  font-weight: 500;
+}
+
+.pf-row__hint {
+  font-size: 12px;
+  color: var(--_muted);
+}
+
+/* ---- segmented ------------------------------------------------------- */
+.pf-seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  border-radius: calc(var(--pf-r) + 2px);
+  background: var(--pf-code-bg, var(--_bg));
+  border: 1px solid var(--pf-border, var(--_border));
+}
+
+.pf-seg button {
+  border: 0;
+  background: transparent;
+  padding: 5px 11px;
+  border-radius: var(--pf-r);
+  color: var(--pf-fg2, var(--_text));
+  white-space: nowrap;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.pf-seg button:hover {
+  background: color-mix(in srgb, var(--_text) 6%, transparent);
+}
+
+.pf-seg button.is-on {
+  background: var(--_surface);
+  color: var(--_text);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.18), inset 0 1px 0 var(--pf-specular, transparent), 0 0 0 1px var(--_border);
+}
+
+/* ---- switch ---------------------------------------------------------- */
+.pf-switch {
+  position: relative;
+  flex: none;
+  width: 36px;
+  height: 20px;
+  border: 0;
+  padding: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--_text) 18%, transparent);
+  transition: background-color 140ms ease;
+}
+
+.pf-switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+  transition: transform 160ms cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.pf-switch[aria-checked="true"] {
+  background: var(--_accent);
+}
+
+.pf-switch[aria-checked="true"] .pf-switch__thumb {
+  transform: translateX(16px);
+}
+
+.pf-switch--lg {
+  width: 44px;
+  height: 24px;
+}
+
+.pf-switch--lg .pf-switch__thumb {
+  width: 20px;
+  height: 20px;
+}
+
+.pf-switch--lg[aria-checked="true"] .pf-switch__thumb {
+  transform: translateX(20px);
+}
+
+/* ---- palette cards --------------------------------------------------- */
+.pf-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.pf-card {
+  display: grid;
+  gap: 6px;
+  text-align: left;
+  padding: 8px 8px 10px;
+  border-radius: calc(var(--pf-r) + 2px);
+  border: 1px solid var(--_border);
+  background: var(--pf-code-bg, var(--_bg));
+  transition: border-color 140ms ease, transform 140ms ease, box-shadow 140ms ease;
+}
+
+.pf-card:hover {
+  transform: translateY(-1px);
+}
+
+.pf-card.is-selected {
+  border-color: var(--_accent);
+  box-shadow: 0 0 0 1px var(--_accent), 0 8px 22px -14px var(--_accent);
+}
+
+.pf-card__swatch {
+  display: flex;
+  height: 64px;
+  border-radius: var(--pf-r);
+  overflow: hidden;
+  border: 1px solid var(--sw-border);
+  background: var(--sw-bg);
+}
+
+.pf-card__side {
+  width: 28%;
+  background: var(--sw-side);
+}
+
+.pf-card__main {
+  position: relative;
+  flex: 1;
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: 10px;
+}
+
+.pf-card__line {
+  height: 6px;
+  width: 80%;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--sw-fg) 22%, transparent);
+}
+
+.pf-card__line--short {
+  width: 52%;
+}
+
+.pf-card__dot {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--sw-accent);
+  box-shadow: 0 0 10px -1px var(--sw-accent);
+}
+
+.pf-card__name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 2px;
+  font-weight: 600;
+}
+
+.pf-card__hint {
+  padding: 0 2px;
+  font-size: 12px;
+  color: var(--_muted);
+}
+
+.pf-badge {
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--pf-on-accent, #fff);
+  background: var(--_accent);
+}
+
+/* ---- accent chips ---------------------------------------------------- */
+.pf-chips,
+.pf-scenes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pf-chip,
+.pf-scene,
+.pf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px 6px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--_border);
+  background: var(--pf-code-bg, var(--_bg));
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.pf-scene,
+.pf-btn {
+  padding: 6px 12px;
+  border-radius: var(--pf-r);
+}
+
+.pf-chip:hover,
+.pf-scene:hover,
+.pf-btn:hover {
+  border-color: color-mix(in srgb, var(--_text) 30%, transparent);
+}
+
+.pf-chip.is-on,
+.pf-scene.is-on {
+  border-color: var(--_accent);
+  background: color-mix(in srgb, var(--_accent) 14%, var(--_surface));
+}
+
+.pf-chip__dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--chip);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 0 0 1px rgb(0 0 0 / 0.18);
+}
+
+/* ---- preview --------------------------------------------------------- */
+.pf-preview {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34% 1fr;
+  min-height: 330px;
+  margin: 0;
+  border-radius: calc(var(--pv-r) + 4px);
+  overflow: hidden;
+  background: var(--pf-bg);
+  color: var(--pf-fg);
+  border: 1px solid var(--pf-card-border);
+  box-shadow: 0 24px 48px -28px rgb(0 0 0 / 0.55);
+  transition: filter 200ms ease;
+}
+
+.pf-preview[data-amb="off"] .pf-pv__hair,
+.pf-preview[data-amb="off"] .pf-pv__aura {
+  display: none;
+}
+
+.pf-preview.is-off {
+  filter: grayscale(0.85) opacity(0.7);
+}
+
+.pf-pv__hair {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--pv-line, 2px);
+  z-index: 2;
+  background: linear-gradient(90deg, transparent, var(--pf-spec-1) 14%, var(--pf-spec-2) 40%, var(--pf-spec-3) 66%, var(--pf-spec-4) 88%, transparent);
+  opacity: var(--pv-line-o, 0.85);
+  box-shadow: 0 0 var(--pv-glow, 12px) color-mix(in srgb, var(--pf-spec-2) 70%, transparent);
+}
+
+.pf-pv__aura {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--pv-aura-h, 120px);
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(55% 100% at 18% 0%, var(--pf-spec-1), transparent 72%),
+    radial-gradient(45% 95% at 52% 0%, var(--pf-spec-2), transparent 70%),
+    radial-gradient(40% 90% at 84% 0%, var(--pf-spec-3), transparent 70%);
+  opacity: var(--pv-aura-o, 0.16);
+}
+
+.pf-pv__side {
+  display: grid;
+  align-content: start;
+  gap: 3px;
+  padding: 14px 8px;
+  background: var(--pf-sidebar);
+  border-right: 1px solid var(--pf-border);
+  font-size: 12px;
+}
+
+.pf-pv__brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 6px 10px;
+  font-weight: 600;
+}
+
+.pf-pv__nav {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 8px;
+  border-radius: var(--pv-r);
+  color: var(--pf-fg2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pf-pv__nav.is-active {
+  color: var(--pf-fg);
+  background: color-mix(in srgb, var(--pf-fg) 8%, var(--pf-sidebar));
+}
+
+.pf-pv__navdot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pf-accent);
+  box-shadow: 0 0 6px var(--pf-accent);
+}
+
+.pf-pv__navdot.is-idle {
+  background: var(--pf-fg3);
+  box-shadow: none;
+  opacity: 0.5;
+}
+
+.pf-pv__main {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 14px 12px;
+  min-width: 0;
+  font-size: 12px;
+}
+
+.pf-pv__bubble {
+  align-self: flex-end;
+  max-width: 88%;
+  padding: 8px 11px;
+  border-radius: calc(var(--pv-r) + 4px);
+  background: var(--pf-bubble);
+  border: 1px solid var(--pf-border);
+}
+
+.pf-pv__text {
+  margin: 0;
+  color: var(--pf-fg);
+}
+
+.pf-pv__text code,
+.pf-pv__code {
+  font-family: var(--pv-mono);
+}
+
+.pf-pv__text code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--pf-secondary);
+  color: var(--pf-link);
+}
+
+.pf-pv__code {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--pv-r);
+  background: var(--pf-code-bg);
+  border: 1px solid var(--pf-border);
+  white-space: pre-wrap;
+  font-size: 11.5px;
+  color: var(--pf-fg2);
+}
+
+.tk-k { color: var(--pf-accent); }
+.tk-f { color: var(--pf-fg); font-weight: 600; }
+.tk-s { color: var(--pf-success); }
+.tk-c { color: var(--pf-fg3); }
+
+.pf-pv__composer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding: 8px 8px 8px 12px;
+  border-radius: calc(var(--pv-r) + 6px);
+  background: var(--pf-card);
+  border: 1px solid var(--pf-card-border);
+  box-shadow: inset 0 1px 0 var(--pf-specular);
+}
+
+.pf-pv__placeholder {
+  color: var(--pf-placeholder);
+}
+
+.pf-pv__send {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--pf-accent);
+  color: var(--pf-on-accent);
+  font-weight: 700;
+  box-shadow: 0 0 12px -2px var(--pf-accent);
+}
+
+.pf-pv__caption {
+  position: absolute;
+  right: 10px;
+  bottom: -1px;
+  transform: translateY(100%);
+  padding-top: 6px;
+  font-size: 11px;
+  color: var(--_muted);
+}
+
+.pf-col--preview {
+  padding-bottom: 22px;
+}
+
+/* ---- footer ---------------------------------------------------------- */
+.pf-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1120px;
+  margin: 22px auto 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--pf-border, var(--_border));
+  color: var(--_muted);
+  font-size: 12px;
+}
+
+.pf-foot p {
+  margin: 4px 0;
+  max-width: 640px;
+}
+
+.pf-foot strong {
+  color: var(--_text);
+}
+
+.pf-foot a {
+  color: var(--pf-link, var(--_accent));
+  text-decoration: none;
+}
+
+.pf-foot a:hover {
+  text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-page * {
+    transition: none !important;
+  }
+}
+
+/* ---- top tabs & usage -------------------------------------------------- */
+.pf-tabs {
+  display: flex;
+  gap: 4px;
+  max-width: 1120px;
+  margin: -6px auto 18px;
+  border-bottom: 1px solid var(--pf-border, var(--_border));
+}
+
+.pf-tabs button {
+  position: relative;
+  padding: 8px 14px;
+  border: 0;
+  background: transparent;
+  color: var(--_muted);
+  font-weight: 500;
+}
+
+.pf-tabs button:hover {
+  color: var(--_text);
+}
+
+.pf-tabs button.is-on {
+  color: var(--_text);
+}
+
+.pf-tabs button.is-on::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--pf-spec-1, var(--_accent)), var(--_accent), var(--pf-spec-3, var(--_accent)));
+}
+
+.pf-usage-wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 18px 20px;
+}
+
+.pf-usage-opts {
+  margin: -6px 0 12px;
+  border-bottom: 1px solid var(--pf-border, var(--_border));
+}
