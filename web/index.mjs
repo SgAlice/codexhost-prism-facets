@@ -15,11 +15,13 @@ import { applyVars, paletteVars } from "../shared/dom.mjs";
 import { mountUsageView } from "../shared/usage-view.mjs";
 import usageCss from "../shared/usage-css.mjs";
 
+/**
+ * CH Web's own light/dark state. The boot script and theme presenter toggle
+ * body[data-ds-dark-theme]; trust it rather than prefers-color-scheme, which
+ * can disagree with the host (e.g. the macOS app shell with "system" theme).
+ */
 function hostScheme(doc, win) {
-  if (doc.body?.hasAttribute("data-ds-dark-theme")) return "dark";
-  const source = doc.documentElement?.dataset?.dsThemeSource;
-  if (source === "light") return "light";
-  if (source === "dark") return "dark";
+  if (doc.body) return doc.body.hasAttribute("data-ds-dark-theme") ? "dark" : "light";
   try {
     return win?.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   } catch {

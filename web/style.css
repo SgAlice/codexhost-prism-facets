@@ -334,6 +334,12 @@ html[data-cx-ext-prism-facets-on] body[data-ds-dark-theme] {
   background-color: var(--pf-bg) !important;
 }
 
+html[data-cx-ext-prism-facets-on][data-cx-ext-prism-facets-s-dark] body :is([class*="_root"], [class*="_sessionRow"], [class*="_searchResultRow"]),
+html[data-cx-ext-prism-facets-on][data-cx-ext-prism-facets-s-light] body :is([class*="_root"], [class*="_sessionRow"], [class*="_searchResultRow"]) {
+  --ch-sidebar-text-primary: var(--pf-fg) !important;
+  --ch-sidebar-text-muted: color-mix(in srgb, var(--pf-fg) 50%, transparent) !important;
+}
+
 html[data-cx-ext-prism-facets-on][data-cx-ext-prism-facets-r-sharp] {
   --dsw-radius-xs: 2px !important;
   --dsw-radius-sm: 4px !important;

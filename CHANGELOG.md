@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.6 — 2026-11-26
+
+- CH Web: "Follow host" now reads CH Web's own body[data-ds-dark-theme] instead of prefers-color-scheme, which could disagree in the macOS app shell and produce a dark palette over a light host (dark sidebar text on a dark sidebar).
+- CH Web: sidebar-local text colours (`--ch-sidebar-text-*`) follow the palette scheme, so "Always dark / Always light" stays readable when the host uses the other scheme.
+
 ## 1.2.5 — 2026-11-26
 
 - Phones (≤ 640 px): the usage panel on the CH Web new-session screen becomes compact — 3-column cards, smaller type, Harness and project pickers side by side, and the heatmap, breakdown lines and footer hidden. About 234 px tall instead of ~1000 px, so the greeting and composer stay on screen. The full view remains in the settings page.

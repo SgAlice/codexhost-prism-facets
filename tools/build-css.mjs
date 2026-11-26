@@ -104,6 +104,7 @@ function hostCss(host) {
 
   // 4. Host token mapping.
   out.push(host === "desktop" ? desktopMapping(on) : webMapping(on));
+  if (host === "web") out.push(webSidebarText(on, m));
 
   // 5. Corners.
   out.push(host === "desktop" ? desktopCorners(on, m) : webCorners(on, m));
@@ -416,6 +417,21 @@ ${decl([
   ["--dsh-boot-bg", "var(--pf-bg)"],
   ["background-color", "var(--pf-bg)"],
 ])}
+}
+`;
+}
+
+// CH Web keeps a few sidebar-local text colours that switch only with its own
+// body[data-ds-dark-theme] (ui-sidebar SidebarRoot.root, ui-workspace
+// Rows.sessionRow / .searchResultRow). Follow the palette scheme instead so
+// a forced "always dark/light" mode never puts dark text on a dark sidebar.
+function webSidebarText(on, m) {
+  const sel = (scheme) =>
+    `${on}${m(`s-${scheme}`)} body :is([class*="_root"], [class*="_sessionRow"], [class*="_searchResultRow"])`;
+  return `${sel("dark")},
+${sel("light")} {
+  --ch-sidebar-text-primary: var(--pf-fg) !important;
+  --ch-sidebar-text-muted: color-mix(in srgb, var(--pf-fg) 50%, transparent) !important;
 }
 `;
 }
