@@ -1,5 +1,7 @@
-# Build the codexhost extension ZIP and attach it to a GitHub Release
-# whenever a tag like v1.0.0 is pushed.
+# Build the codexhost extension ZIP and publish a GitHub Release when a tag
+# like v1.2.3 is pushed. Per the codexhost extension registry rules, the
+# Release carries exactly one .zip plus the manifest's icon and screenshots as
+# separate assets named after the last path segment (byte-identical to the ZIP).
 name: release
 
 on:
@@ -16,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
       - name: Check tag matches manifest version
         run: |
           VERSION=$(node -p "require('./manifest.json').version")
@@ -26,4 +28,6 @@ jobs:
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" dist/*.zip --title "$GITHUB_REF_NAME" --generate-notes
+        run: |
+          IMAGES=$(node -p "const m=require('./manifest.json'); [m.icon, ...(m.screenshots||[])].filter(Boolean).join(' ')")
+          gh release create "$GITHUB_REF_NAME" dist/*.zip $IMAGES --title "$GITHUB_REF_NAME" --generate-notes

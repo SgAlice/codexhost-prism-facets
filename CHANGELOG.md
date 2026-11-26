@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.3 — 2026-11-26
+
+- Publishing follows the codexhost extension registry rules: the Release workflow uploads one ZIP plus the icon and screenshots as same-named assets.
+- `tools/pack.mjs` builds the ZIP with Node's zlib (no `child_process`, no external `zip`), so the repository passes the registry's static scan in source mode as well.
+- Screenshots use made-up demo data; author set to SgAlice.
+
 ## 1.2.2 — 2026-11-26
 
 - Ambient prism light toned down (about 40–50 % dimmer at every level) while keeping the three levels distinct.

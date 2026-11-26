@@ -66,16 +66,22 @@ node tools/dev/serve.mjs     # 静态文件 + 真实后端桥接（可选 CH_WEB
 - `desktop/index.js` 是经典脚本，不能 `import`，其中的标记逻辑需与 `markersFor()` 保持一致。
 - `api.storage.set()` 会**整体替换**设置，且拒绝未在 `settingsSchema` 中声明的键；新增设置时请同时修改 `manifest.json` 与 `DEFAULTS`。
 
-## 发布到 GitHub
+## 发布到 GitHub 与投稿市场
 
-```bash
-git init && git add . && git commit -m "Prism Facets 1.0.0"
-gh repo create <你的用户名>/codexhost-prism-facets --public --source . --push
-# 可选：在 manifest.json 中加入 "repository": "https://github.com/<你的用户名>/codexhost-prism-facets"
-git tag v1.0.0 && git push origin v1.0.0
-```
+本仓库按 [codexhost 扩展市场](https://github.com/BytePioneer-AI/codexhost-extensions-registry) 的要求发布：
 
-推送 `v*` 标签后，`.github/workflows/release.yml` 会自动打包并把 `.zip` 附加到 GitHub Release（标签需与 `manifest.json` 的 `version` 一致）。用户可以直接下载 Release 中的 `.zip` 导入，或在插件中心粘贴仓库链接安装；codexhost 市场索引会优先拉取最新正式 Release。
+1. 递增 `manifest.json` 的 `version`，更新 `CHANGELOG.md`，提交并推送到 `main`。
+2. 推送同名标签触发 Release：
+
+   ```bash
+   git tag v1.2.3 && git push origin v1.2.3
+   ```
+
+   `.github/workflows/release.yml` 会用 `tools/pack.mjs` 打包，并创建**公开正式 Release**，上传**唯一 1 个** `.zip` 资产，以及与 ZIP 内字节一致、以文件名命名的 `icon.png` 与各张截图（市场校验器会逐字节核对）。标签必须与 `manifest.json` 的 `version` 一致。
+3. 首次上架：打开市场的 [提交扩展 Issue 表单](https://github.com/BytePioneer-AI/codexhost-extensions-registry/issues/new?template=submit-extension.yml)，只填写仓库主页 `https://github.com/SgAlice/codexhost-prism-facets`。机器人会读取最新 Release 的 ZIP 并做契约校验与静态扫描（拦截 `eval(`、`new Function`、`child_process`），通过后生成 `sources/prism-facets.json` 的 PR，由维护者审核合并。
+4. 上架后，之后的版本只需重复 1–2，市场每 30 分钟自动同步；不会在用户设备上自动安装或启用。
+
+也可以不经市场，直接把 Release 中的 `.zip` 或仓库链接分享给他人，在「插件」中心导入。
 
 ## 许可与致谢
 
