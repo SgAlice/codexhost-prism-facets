@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.8 — 2026-11-27
+
+- CH Web: the opaque sidebar colour added in 1.2.7 used `[class$="_frame"]`, which also matched every other CSS Modules `<hash>_frame` element — the transcript scroller, turn rail, image thumbnails, document frames — so the conversation area turned sidebar-coloured and no longer matched the composer area below it or the header above it. It now targets only the AppFrame (`[data-cx-region="app"]`), and leaves the frame transparent when a CH Web wallpaper is set.
+- Usage panel: the "≈ N copies of a book" line now picks from eight books (The Little Prince … In Search of Lost Time) instead of only The Three-Body Problem; click it for another book. Only books that fit at least about once are offered.
+- Settings page, widget and usage panel use the host system font for text and numbers instead of a monospace stack (#1 by hhucz).
+- Ambient prism light: the aura no longer shows banding. Its strength is baked into the gradient colours instead of `opacity`, with a faint static noise dither on top that fades out with the aura.
+
 ## 1.2.7 — 2026-11-26
 
 - macOS app shell (CH Web): the sidebar frame was only a 40–50 % tint over the window's native vibrancy, which follows the macOS appearance, while its text follows CH Web's theme — so light text could end up on a light sidebar (and vice versa). The frame now uses the opaque palette sidebar colour, and the New Session button background is derived from the palette, so sidebar text and background always come from the same palette.

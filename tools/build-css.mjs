@@ -143,6 +143,16 @@ function hostCss(host) {
 }
 `);
   }
+  // The aura is only a few percent strong, so over a dark background it spans
+  // just ~8–20 distinct 8-bit levels and shows visible steps (banding). The
+  // strength is baked into the gradient colours instead of `opacity`, and a
+  // tiny static noise tile (alpha 0–~4/255) sits on top as dither, breaking
+  // the steps without visible grain. The mask fades the dither out with the
+  // aura so the bottom edge of the layer never shows.
+  const AURA_NOISE = {
+    dark: noiseTile(1),
+    light: noiseTile(0),
+  };
   const ambLevels = Object.keys(AMBIENT_STYLE).map((k) => m(`amb-${k}`)).join(", ");
   const amb = `${on}:is(${ambLevels})`;
   out.push(`${amb} body::after {
@@ -159,6 +169,7 @@ function hostCss(host) {
     0 0 calc(var(--pf-amb-glow) * 2) 0 color-mix(in srgb, var(--pf-spec-1) 25%, transparent);
 }
 ${amb} body::before {
+  --pf-amb-aura-k: calc(var(--pf-amb-aura-o) * 100%);
   content: "";
   position: fixed;
   inset: 0 0 auto 0;
@@ -166,15 +177,22 @@ ${amb} body::before {
   z-index: 2147482999;
   pointer-events: none;
   background:
-    radial-gradient(55% 100% at 18% 0%, var(--pf-spec-1) 0%, transparent 72%),
-    radial-gradient(45% 95% at 52% 0%, var(--pf-spec-2) 0%, transparent 70%),
-    radial-gradient(40% 90% at 84% 0%, var(--pf-spec-3) 0%, transparent 70%);
-  opacity: var(--pf-amb-aura-o);
+    ${AURA_NOISE.dark},
+    radial-gradient(55% 100% at 18% 0%, color-mix(in srgb, var(--pf-spec-1) var(--pf-amb-aura-k), transparent) 0%, transparent 72%),
+    radial-gradient(45% 95% at 52% 0%, color-mix(in srgb, var(--pf-spec-2) var(--pf-amb-aura-k), transparent) 0%, transparent 70%),
+    radial-gradient(40% 90% at 84% 0%, color-mix(in srgb, var(--pf-spec-3) var(--pf-amb-aura-k), transparent) 0%, transparent 70%);
+  -webkit-mask-image: linear-gradient(#000 60%, transparent);
+  mask-image: linear-gradient(#000 60%, transparent);
   mix-blend-mode: screen;
 }
 ${on}${m("s-light")}:is(${ambLevels}) body::before {
+  --pf-amb-aura-k: calc(var(--pf-amb-aura-o) * 55%);
+  background:
+    ${AURA_NOISE.light},
+    radial-gradient(55% 100% at 18% 0%, color-mix(in srgb, var(--pf-spec-1) var(--pf-amb-aura-k), transparent) 0%, transparent 72%),
+    radial-gradient(45% 95% at 52% 0%, color-mix(in srgb, var(--pf-spec-2) var(--pf-amb-aura-k), transparent) 0%, transparent 70%),
+    radial-gradient(40% 90% at 84% 0%, color-mix(in srgb, var(--pf-spec-3) var(--pf-amb-aura-k), transparent) 0%, transparent 70%);
   mix-blend-mode: multiply;
-  opacity: calc(var(--pf-amb-aura-o) * 0.55);
 }
 @media print {
   ${amb} body::before,
@@ -425,6 +443,20 @@ ${decl([
 // body[data-ds-dark-theme] (ui-sidebar SidebarRoot.root, ui-workspace
 // Rows.sessionRow / .searchResultRow). Follow the palette scheme instead so
 // a forced "always dark/light" mode never puts dark text on a dark sidebar.
+/**
+ * A 128 px tileable fractal-noise SVG (white for `level` 1, black for 0)
+ * whose alpha stays within a few 8-bit steps — used as a dither layer.
+ */
+function noiseTile(level) {
+  const svg =
+    `<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'>` +
+    `<filter id='n' x='0' y='0' width='100%' height='100%'>` +
+    `<feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/>` +
+    `<feColorMatrix values='0 0 0 0 ${level} 0 0 0 0 ${level} 0 0 0 0 ${level} 0.03 0 0 0 0'/>` +
+    `</filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>`;
+  return `url("data:image/svg+xml,${svg.replace(/</g, "%3C").replace(/>/g, "%3E")}") 0 0 / 128px 128px`;
+}
+
 function webSidebarText(on, m) {
   const sel = (scheme) =>
     `${on}${m(`s-${scheme}`)} body :is([class*="_root"], [class*="_sessionRow"], [class*="_searchResultRow"])`;
@@ -432,7 +464,12 @@ function webSidebarText(on, m) {
   // window's native vibrancy, which follows the OS appearance rather than CH
   // Web's theme. Paint the frame with the opaque palette sidebar so the
   // background and the text above always come from the same palette.
-  const frame = `${on} body :is([class$="_frame"], [class*="_frame "])`;
+  // CSS Modules names are "<hash>_frame", and many unrelated modules have a
+  // "_frame" class (transcript scroller, turn rail, image thumbnails, document
+  // frames …), so target the AppFrame through the region marker codexhost puts
+  // on it (or, failing that, the grid that holds the centre column). With a
+  // wallpaper CH Web makes the frame transparent on purpose — leave it alone.
+  const frame = `${on} body:not([data-codexhost-wallpaper]) :is([data-cx-region="app"], [class*="_frame"]:has(> [class*="_centerCol"]))`;
   return `${sel("dark")},
 ${sel("light")} {
   --ch-sidebar-text-primary: var(--pf-fg) !important;
