@@ -11,7 +11,19 @@
 export const RANGES = ["today", "7d", "30d", "90d", "all"];
 export const ALL = "__all__";
 export const NO_PROJECT = "__none__";
-const TOKENS_PER_BOOK = 202_000; // ≈ one copy of 《三体》
+// Fun comparison: rough token counts of well-known books (≈ words × 1.3 for
+// English editions, ≈ characters for Chinese originals). Titles live in
+// shared/i18n.mjs as `book_<id>`.
+export const BOOKS = [
+  { id: "littlePrince", tokens: 22_000 },
+  { id: "gatsby", tokens: 62_000 },
+  { id: "harryPotter", tokens: 100_000 },
+  { id: "threeBody", tokens: 202_000 },
+  { id: "lotr", tokens: 620_000 },
+  { id: "warAndPeace", tokens: 760_000 },
+  { id: "redChamber", tokens: 1_000_000 },
+  { id: "lostTime", tokens: 1_650_000 },
+];
 const HEATMAP_DAYS = 26 * 7 + 6;
 const DAY_MS = 86_400_000;
 
@@ -189,7 +201,6 @@ function normalizeCodexhost(main, all, quota) {
       { key: "topModel", value: { text: models[0]?.label ?? null } },
     ],
     tokens,
-    books: Math.round(tokens / TOKENS_PER_BOOK),
     heat: heatFrom(heat),
     models: models.map((m) => ({ ...m, share: tokens ? m.tokens / tokens : 0 })),
     harnessRows: main.byHarness
@@ -231,7 +242,6 @@ export function logSource(api) {
           { key: "topModel", value: { text: o.topModel } },
         ],
         tokens: o.tokens,
-        books: Math.round(o.tokens / TOKENS_PER_BOOK),
         heat: heatFrom(heat),
         models: r.models.map((m) => ({ id: m.model, label: m.model, tokens: m.tokens, requests: null, sessions: m.sessions, cacheRate: m.cacheRate, cost: null, share: m.share })),
         harnessRows: null,

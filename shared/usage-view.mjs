@@ -5,7 +5,7 @@
 // Desktop), normalised into one model.
 
 import { h } from "./dom.mjs";
-import { ALL, NO_PROJECT, autoSource } from "./usage-sources.mjs";
+import { ALL, BOOKS, NO_PROJECT, autoSource } from "./usage-sources.mjs";
 
 const POLL_MS = 1500;
 const MAX_POLLS = 40;
@@ -71,6 +71,7 @@ export function mountUsageView(container, api, getT, opts = {}) {
   let polls = 0;
   let disposed = false;
   let requestId = 0;
+  let bookTurn = Math.floor(Math.random() * BOOKS.length);
   const t = (k) => getT()(k);
 
   async function load(refresh = false, poll = false) {
@@ -211,13 +212,34 @@ export function mountUsageView(container, api, getT, opts = {}) {
     );
   }
 
+  // "≈ N copies of <book>": a random book per mount; click for the next one.
+  // Only books that fit at least once are offered, so N is never 0.
+  function funBooks(tokens) {
+    const fits = BOOKS.filter((b) => tokens / b.tokens >= 0.5);
+    const pool = fits.length ? fits : BOOKS.slice(0, 1);
+    const book = pool[bookTurn % pool.length];
+    const next = () => { bookTurn += 1; render(); };
+    return h(
+      "p",
+      {
+        class: "pu-fun",
+        role: "button",
+        tabindex: "0",
+        title: t("funBooksNext"),
+        onClick: next,
+        onKeydown: (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); next(); } },
+      },
+      t("funBooks").replace("{n}", int(Math.max(1, Math.round(tokens / book.tokens)))).replace("{book}", t(`book_${book.id}`)),
+    );
+  }
+
   function overview() {
     return h(
       "div",
       { class: "pu-body" },
       h("div", { class: "pu-cards" }, data.cards.map(card)),
       heatmap(data.heat),
-      data.tokens ? h("p", { class: "pu-fun" }, t("funBooks").replace("{n}", int(data.books))) : null,
+      data.tokens ? funBooks(data.tokens) : null,
     );
   }
 
